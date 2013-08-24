@@ -2,7 +2,7 @@
 
 Como o objetivo do Trilado Framework é facilitar o desenvolvimento de sites, sua instalação não poderia ser complicada. Porém, alguns requisitos básicos são necessários, configurações que na maioria dos servidores, principalmente terceirizados, já vêm instaladas e definidas.
 
-Esse tutorial de instalação foi feito para a versão **2.1**, portanto, pode não servir para outras versões.
+Esse tutorial de instalação foi feito para a versão **2.0.x**, portanto, pode não servir para outras versões.
 
 ## Requisitos ##
 
