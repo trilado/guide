@@ -61,16 +61,18 @@ Alguns dados são criptografados para aumentar a segurança da aplicação, port
 
 Para definir o salt, é utilizada a configuração:
 
-	Config::set('salt', '56%% use qualquer caractere aqui #@3');
+	Config::set('salt', 'use qualquer caractere aqui');
 
 ## Debug ##
+
 Outra forma de segurança é o funcionamento da configuração de debug, na qual você poderá definir quando as mensagens de erros serão exibidas. Além das mensagens de erro, com o modo debug ativado é possível ver otras informações da aplicação, como por exemplo as consultas SQL executadas.
 
 Para definir o debug, é utilizada a seguinte configuração, informando um `array` como parâmetro:
 
 	Config::set('debug', array(
 		'type'	=> 'local',
-		'query'	=> false
+		'query'	=> false,
+		'sql'	=> true,
 	));
 
 Veja abaixo a definição de cada chave e valor:
@@ -88,6 +90,7 @@ O `type` define para quem o debug estará habilitado, pode assumir 3 valores, s�
 ~! Não é recomendado o uso do valor `all`, pois, caso a aplicação dispare um erro, o usuário terá acesso a detalhes do erro. ~!
 
 ### query ###
+
 Em alguns casos, é necessário verificar o debug, porém, não tem acesso direto ao servidor para acessar a aplicação localhost, portanto, você pode definir um valor para a querystring `debug` que, ao ser acessada, habilita o debug. O valor padrão da query é `false`, nesse caso, a querystring não irá funcionar.
 
 	'query' => 'hab-meu-debug'
@@ -95,6 +98,17 @@ Em alguns casos, é necessário verificar o debug, porém, não tem acesso diret
 No exemplo acima, ao acessar uma URL com a querystring `?debug=hab-meu-debug`, o debug será habilitado, mas somente para página que você está acessando e no momento em que você está acessando.
 
 ~! Se for habilitar essa opção, é importante que defina um valor que só você saberá, para que outra pessoa não tenha acesso as informações. ~!
+
+### sql ###
+O `sql` define se serão exibidas as instruções SQL geradas pelo ORM. Por exemplo, ao executar o código abaixo, irá aparecer a instrução SQL correspondente no final da página.
+
+	Post::all()
+
+O comando anterior gera o seguinte SQL.
+
+	SELECT post.* FROM post
+
+~? Se defindo como `true`, só funciona se o debug estiver habilitado. ~?
 
 ## Banco de Dados ##
 O Trilado permite que sua aplicação conecte em vários bancos de dados diferentes, e ao mesmo tempo. Você deve configurar as conexões, e dentro da sua aplicação chamar a que necessitar.
@@ -154,19 +168,23 @@ Alguns dados do Trilado são armazenados automaticamente em cache, isso para aum
 Para definir o cache, é utilizada a seguinte configuração, informando um `array` como parâmetro:
 
 	Config::set('cache', array(
+		'enabled'	=> false,
 		'type'		=> 'file',
 		'host'		=> 'localhost',
 		'port'		=> 0,
+		'page'		=> false,
 		'time'		=> 10
 	));
 
 
-| Valor  | Tipo   | Descrição |
-| ------ | ------ | --------- |
-| type   | string | Define qual driver (chamanos de cachesource) o framework irá utilizar. É necessário que exista o cachesource dentro diretório `core/libs/cachesource/NomeCachesource.php` |
-| host   | string | Endereço do servidor de cache |
-| port   | int    | Porta da conexão com o servidor |
-| time   | int    | Tempo padrão que os dados permanecerão no cache |
+| Valor  | Tipo    | Descrição |
+| ------ | ------- | --------- |
+| enabled| boolean | Define o cache está habilitado ou não |
+| type   | string  | Define qual driver (chamanos de cachesource) o framework irá utilizar. É necessário que exista o cachesource dentro diretório `core/libs/cachesource/NomeCachesource.php` |
+| host   | string  | Endereço do servidor de cache |
+| port   | int     | Porta da conexão com o servidor |
+| page   | boolean | Define se o HTML das páginas serão armazenadas automáticamente em cache. Se definido como `true`, o tempo de armazenamento é do parâmetro `time` |
+| time   | int     | Tempo padrão que os dados permanecerão no cache |
 
 O Trilado vem com alguns CacheSources implementados, o `FileCachesource`, `ApcCachesource`, `MemcacheCachesource` e `MemcachedCachesource`. Você pode baixar outros cachesources em nosso fórum e criar o seu, basta extender a classe `Cachesource` e implementar os métodos. Mais informações sobre o armazenamento de arquivos em Cache na seção [Cache](~/guide/cache).
 
@@ -216,9 +234,12 @@ O Trilado vem com uma estrutura padrão de diretórios, na qual seu núcleo est�
 
 Você pode utilizar o método `Import::register()`, informando qual diretório deseja inserir, assim, o Trilado irá importar os arquivos desse diretório quando forem solicitados:
 
-	Import::register('app/novodiretorio');
-	Import::register('diretorio_na_raiz');
-	Import::register('app/exemplo');
+	Config::set('directories', array(
+		'controller'	=> App::$root . 'app/controllers',
+		'model'			=> App::$root . 'app/models',
+		'helper'		=> App::$root . 'app/helpers',
+		'vendor'		=> App::$root . 'app/vendors',
+	));
 
 Quando uma classe for instanciada, ou executado algum método estático, por exemplo `$var = new Hello()` ou `Hello::world()`, o Trilado irá procurar automaticamente dentro dos diretórios registrados. Neste caso, serão procurados primeiramente nos diretórios inicialmente definidos no framework, e posteiormente os definidos pelo desenvolvedor. Mais informações sobre o sistema de arquivos do Trilado na seção [Sistema de Arquivos](~/guide/filesystem).
 
