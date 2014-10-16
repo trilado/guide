@@ -4,7 +4,7 @@ As anotações no Trilado, assim como em outros frameworks e linguagens de progr
 No controller, as anotações estão disponíveis apenas para as actions, nas quais podem ser definidas: o template que a action irá usar; e qual usuário pode acessar o conteúdo da action.
 
 ## @Auth() ##
-A marcação `@Auth()` define quem poderá ter acesso à uma determinada action. Ela funciona em conjunto com a classe Auth e recebe como parâmetro o nome, entre aspas, dos papéis que porem ter acesso.
+A marcação `@Auth()` define quem poderá ter acesso à uma determinada action. Ela funciona em conjunto com a classe Auth e recebe como parâmetro o nome, entre aspas, dos papéis que podem ter acesso.
 
 	<?php
 	class NewsController extends Controller
